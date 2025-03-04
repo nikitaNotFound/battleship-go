@@ -1,6 +1,10 @@
 package domain
 
-import "github.com/nikitaNotFound/battleship/internal/domain/models"
+import (
+	"time"
+
+	"github.com/nikitaNotFound/battleship/internal/domain/models"
+)
 
 type GameHistoryStorage interface {
 	CreateGame(gameInfo models.GameInfo) error
@@ -13,4 +17,9 @@ type UserStorage interface {
 	GetUserByID(userID int64) (models.User, error)
 	GetUserFriends(userID int64) ([]models.User, error)
 	UpdateUserRank(userID int64, rankDelta int64) error
+}
+
+type LeaderboardStorage interface {
+	GetLeaderboard(page int, pageSize int) ([]models.User, error)
+	SetLeaderboard(leaderboard models.Leaderboard, aliveFor time.Duration) error
 }
