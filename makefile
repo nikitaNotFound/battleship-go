@@ -23,3 +23,18 @@ migrate-create:
 .PHONY: run
 run:
 	go run cmd/app/main.go
+
+.PHONY: docker-build
+docker-build:
+	docker build -t battleship:latest .
+
+.PHONY: docker-compose-up
+docker-compose-up:
+	docker-compose -f deployments/docker-compose.yml up -d
+
+.PHONY: docker-compose-down
+docker-compose-down:
+	docker-compose -f deployments/docker-compose.yml down
+
+.PHONY: docker-run
+docker-run: docker-build docker-compose-up

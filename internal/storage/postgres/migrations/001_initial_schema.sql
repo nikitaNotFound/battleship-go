@@ -17,6 +17,13 @@ CREATE TABLE games (
     finished_at TIMESTAMP NOT NULL,
     CONSTRAINT different_players CHECK (player1_id != player2_id)
 );
+
+CREATE TABLE user_friends (
+    user1_id BIGINT NOT NULL REFERENCES users(id),
+    user2_id BIGINT NOT NULL REFERENCES users(id),
+    PRIMARY KEY (user1_id, user2_id)
+);
+
 -- +goose StatementEnd
 
 -- +goose Down
