@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: Battleship API
+  description: API for Battleship game
+  version: 1.0.0
+servers:
+  - url: /api/v1
+paths:
+  /games:
+    post:
+      summary: Create a new game
+      operationId: createGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GameInfo"
+      responses:
+        "201":
+          description: Game created successfully
+        "400":
+          description: Invalid input
+  /users/{userId}/games:
+    get:
+      summary: Get user game history
+      operationId: getUserGameHistory
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: User game history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GameInfo"
+  /games/{gameId}:
+    get:
+      summary: Get game by ID
+      operationId: getGame
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Game info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameInfo"
+  /users:
+    post:
+      summary: Create a new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User created successfully
+        "400":
+          description: Invalid input
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /users/{userId}/friends:
+    get:
+      summary: Get user friends
+      operationId: getUserFriends
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: User friends
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /users/{userId}/rank:
+    patch:
+      summary: Update user rank
+      operationId: updateUserRank
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rankDelta:
+                  type: integer
+                  format: int64
+      responses:
+        "200":
+          description: Rank updated successfully
+  /leaderboard:
+    get:
+      summary: Get leaderboard
+      operationId: getLeaderboard
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      summary: Set leaderboard
+      operationId: setLeaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Leaderboard"
+      parameters:
+        - name: aliveFor
+          in: query
+          schema:
+            type: string
+            format: duration
+      responses:
+        "200":
+          description: Leaderboard set successfully
+components:
+  schemas:
+    GameInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        winner:
+          $ref: "#/components/schemas/User"
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        rank:
+          type: integer
+    Leaderboard:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"

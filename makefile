@@ -3,6 +3,10 @@
 MIGRATIONS_DIR := internal/storage/postgres/migrations
 DB_URL := "postgres://$(DB_POSTGRES_USER):$(DB_POSTGRES_PASSWORD)@$(DB_POSTGRES_HOST):$(DB_POSTGRES_PORT)/$(DB_POSTGRES_NAME)"
 
+.PHONY: gen-api
+gen-api:
+	cd ./api/ && oapi-codegen -config cfg.yaml openapi.yaml
+
 .PHONY: migrate-up
 migrate-up:
 	goose -dir $(MIGRATIONS_DIR) postgres "$(DB_URL)" up
@@ -22,7 +26,7 @@ migrate-create:
 
 .PHONY: run
 run:
-	go run cmd/app/main.go
+	go run cmd/web/main.go
 
 .PHONY: docker-build
 docker-build:
